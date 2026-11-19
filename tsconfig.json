@@ -1,0 +1,3 @@
+{
+  "extends": "@alba/config/tsconfig.base.json"
+}

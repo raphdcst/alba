@@ -1,0 +1,28 @@
+{
+  "name": "@alba/infra",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "dev": "alchemy dev",
+    "deploy": "alchemy deploy",
+    "destroy": "alchemy destroy"
+  },
+  "dependencies": {
+    "@alchemy.run/github": "^2.0.0-beta.87",
+    "@alchemy.run/sql": "^2.0.0-beta.87",
+    "@effect/sql-pg": "^4.1.4",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@alba/config": "workspace:*",
+    "@alchemy.run/cloudflare": "2.0.0-beta.87",
+    "@alchemy.run/neon": "2.0.0-beta.87",
+    "@effect/platform-bun": "4.1.4",
+    "@effect/platform-node": "4.1.4",
+    "alchemy": "2.0.0-beta.87",
+    "effect": "4.1.4",
+    "typescript": "catalog:",
+    "varlock": "catalog:"
+  }
+}

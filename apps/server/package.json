@@ -1,0 +1,32 @@
+{
+  "name": "server",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc -b ../../packages/api && tsdown",
+    "check-types": "tsc -b ../../packages/api && tsc --noEmit",
+    "compile": "bun build --compile --no-compile-autoload-dotenv --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "env:generate": "varlock codegen"
+  },
+  "dependencies": {
+    "@alba/api": "workspace:*",
+    "@alba/auth": "workspace:*",
+    "@alba/db": "workspace:*",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/zod": "catalog:",
+    "better-auth": "catalog:",
+    "evlog": "catalog:",
+    "hono": "^4.13.18",
+    "varlock": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@alba/config": "workspace:*",
+    "@alba/infra": "workspace:*",
+    "@cloudflare/workers-types": "catalog:",
+    "@types/node": "catalog:",
+    "tsdown": "^0.23.7",
+    "typescript": "catalog:"
+  }
+}

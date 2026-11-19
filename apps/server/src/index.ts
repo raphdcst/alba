@@ -1,0 +1,97 @@
+import { appRouter } from "@alba/api/routers/index";
+import { OpenAPIHandler } from "@orpc/openapi/fetch";
+import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
+import { onError } from "@orpc/server";
+import { RPCHandler } from "@orpc/server/fetch";
+import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
+import { initLogger } from "evlog";
+import type { BetterAuthInstance } from "evlog/better-auth";
+import { createAuthMiddleware } from "evlog/better-auth";
+import type { EvlogVariables } from "evlog/hono";
+import { evlog } from "evlog/hono";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+
+import { createContext } from "./context";
+import { ENV } from "./env.server";
+import { createAuth } from "./services";
+
+initLogger({
+  env: { service: "alba-server" },
+});
+
+const app = new Hono<EvlogVariables>();
+
+app.use(evlog());
+app.use("*", async (c, next) => {
+  const identifyUser = createAuthMiddleware(
+    createAuth() as BetterAuthInstance,
+    {
+      exclude: ["/api/auth/**"],
+      maskEmail: true,
+    }
+  );
+  await identifyUser(c.get("log"), c.req.raw.headers, c.req.path);
+  return next();
+});
+
+app.use(
+  "/*",
+  cors({
+    allowHeaders: ["Content-Type", "Authorization"],
+    allowMethods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
+    origin: ENV.CORS_ORIGIN,
+  })
+);
+
+app.on(["POST", "GET"], "/api/auth/*", (c) => createAuth().handler(c.req.raw));
+
+export const apiHandler = new OpenAPIHandler(appRouter, {
+  interceptors: [
+    onError((error) => {
+      console.error(error);
+    }),
+  ],
+  plugins: [
+    new OpenAPIReferencePlugin({
+      schemaConverters: [new ZodToJsonSchemaConverter()],
+    }),
+  ],
+});
+
+export const rpcHandler = new RPCHandler(appRouter, {
+  interceptors: [
+    onError((error) => {
+      console.error(error);
+    }),
+  ],
+});
+
+app.use("/*", async (c, next) => {
+  const context = await createContext({ context: c });
+
+  const rpcResult = await rpcHandler.handle(c.req.raw, {
+    context,
+    prefix: "/rpc",
+  });
+
+  if (rpcResult.matched) {
+    return c.newResponse(rpcResult.response.body, rpcResult.response);
+  }
+
+  const apiResult = await apiHandler.handle(c.req.raw, {
+    context,
+    prefix: "/api-reference",
+  });
+
+  if (apiResult.matched) {
+    return c.newResponse(apiResult.response.body, apiResult.response);
+  }
+
+  return next();
+});
+
+app.get("/", (c) => c.text("OK"));
+
+export default app;

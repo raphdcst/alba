@@ -1,0 +1,41 @@
+{
+  "name": "web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -b ../../packages/api && nuxt build",
+    "check-types": "tsc -b ../../packages/api && nuxt prepare && vue-tsc -b",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "dev:bare": "nuxt dev",
+    "env:generate": "varlock codegen"
+  },
+  "dependencies": {
+    "@alba/api": "workspace:*",
+    "@nuxt/ui": "^4.12.0",
+    "@orpc/client": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/tanstack-query": "^1.16.2",
+    "@tanstack/vue-query": "^5.107.1",
+    "better-auth": "catalog:",
+    "evlog": "catalog:",
+    "nuxt": "^4.6.4",
+    "varlock": "catalog:",
+    "vue": "^3.5.45",
+    "vue-router": "^5.5.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@alba/config": "workspace:*",
+    "@alchemy.run/frontend-frameworks": "2.0.0-beta.86",
+    "@iconify-json/lucide": "^1.2.154",
+    "@tanstack/vue-query-devtools": "^6.4.1",
+    "tailwindcss": "^4.3.5",
+    "typescript": "catalog:",
+    "vue-tsc": "^3.3.14"
+  },
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  }
+}
