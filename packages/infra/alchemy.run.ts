@@ -43,7 +43,7 @@ export default Alchemy.Stack(
             _This comment updates automatically with each push._
           `,
         issueNumber: Number(process.env.PULL_REQUEST),
-        owner: "hirodev-fr",
+        owner: "raphdcst",
         repository: "alba",
       });
     }

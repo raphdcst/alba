@@ -39,14 +39,14 @@ export default Alchemy.Stack(
 
     yield* GitHub.Secret("cf-api-token", {
       name: "CLOUDFLARE_API_TOKEN",
-      owner: "hirodev-fr",
+      owner: "raphdcst",
       repository: "alba",
       value: apiToken.value,
     });
 
     yield* GitHub.Secret("cf-account-id", {
       name: "CLOUDFLARE_ACCOUNT_ID",
-      owner: "hirodev-fr",
+      owner: "raphdcst",
       repository: "alba",
       value: Redacted.make(accountId),
     });
